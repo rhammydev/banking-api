@@ -166,4 +166,89 @@ public static class MailUtils
 
             return GetEmailWrapper(title, content);
     }
+    
+    public static string GetAccountUpdatedEmailHtml(string customerName, string accountNumber, Dictionary<string, string> updatedFields)
+{
+    var title = "Account Details Updated";
+    
+    var fieldsHtml = string.Join("", updatedFields.Select(f => $@"
+        <tr>
+            <th>{f.Key}</th>
+            <td>{f.Value}</td>
+        </tr>"));
+
+    var content = $@"
+        <div style='text-align: center; margin-bottom: 30px;'>
+            <h2 style='color: #1e3c72; font-size: 24px; margin-bottom: 10px;'>Account Update Notification</h2>
+            <p style='color: #4a5568; font-size: 16px; margin: 0;'>Hi {customerName}, your account details have been successfully updated.</p>
+        </div>
+
+        <div style='background-color: #fffbeb; border-left: 4px solid #f6ad55; padding: 15px 20px; border-radius: 6px; margin-bottom: 25px;'>
+            <p style='margin: 0; color: #744210; font-size: 14px;'>
+                ⚠️ If you did not request this change, please contact support immediately.
+            </p>
+        </div>
+
+        <h3 style='color: #2d3748; border-bottom: 2px solid #eef2f5; padding-bottom: 8px; margin-bottom: 15px;'>Updated Information</h3>
+        <table class='details-table'>
+            <tr>
+                <th>Account Number</th>
+                <td>{accountNumber}</td>
+            </tr>
+            {fieldsHtml}
+            <tr>
+                <th>Updated At</th>
+                <td>{DateTime.UtcNow:f} (UTC)</td>
+            </tr>
+        </table>
+
+        <p style='color: #4a5568; font-size: 14px; margin-top: 25px;'>
+            If this was you, no further action is needed. Your account remains active and secure.
+        </p>";
+
+    return GetEmailWrapper(title, content);
+}
+
+    public static string GetAccountDeletedEmailHtml(string customerName, string accountNumber)
+{
+    var title = "Account Closed";
+
+    var content = $@"
+        <div style='text-align: center; margin-bottom: 30px;'>
+            <h2 style='color: #1e3c72; font-size: 24px; margin-bottom: 10px;'>We're Sorry to See You Go, {customerName}</h2>
+            <p style='color: #4a5568; font-size: 16px; margin: 0;'>Your account has been successfully closed as requested.</p>
+        </div>
+
+        <div style='background-color: #fff5f5; border-left: 4px solid #fc8181; padding: 15px 20px; border-radius: 6px; margin-bottom: 25px;'>
+            <p style='margin: 0; color: #742a2a; font-size: 14px;'>
+                ⚠️ If you did not request this closure, please contact support immediately as this action may be reversible within 24 hours.
+            </p>
+        </div>
+
+        <h3 style='color: #2d3748; border-bottom: 2px solid #eef2f5; padding-bottom: 8px; margin-bottom: 15px;'>Closure Summary</h3>
+        <table class='details-table'>
+            <tr>
+                <th>Account Holder</th>
+                <td>{customerName}</td>
+            </tr>
+            <tr>
+                <th>Account Number</th>
+                <td>{accountNumber}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td><span style='color: #c53030; background-color: #fff5f5; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600;'>CLOSED</span></td>
+            </tr>
+            <tr>
+                <th>Closed At</th>
+                <td>{DateTime.UtcNow:f} (UTC)</td>
+            </tr>
+        </table>
+
+        <p style='color: #4a5568; font-size: 14px; margin-top: 25px;'>
+            Thank you for banking with us. We hope to serve you again in the future.
+        </p>";
+
+    return GetEmailWrapper(title, content);
+}
 }

@@ -70,4 +70,25 @@ public class EmailService : IEmailService
         
         await SendMimeMessageAsync(message);
     }
+
+    public async Task SendAccountUpdateEmailAsync(string toEmail, string customerName, string accountNumber, Dictionary<string, string> updatedFields)
+    {
+        var subject = $"Account Details Updated!";
+        var htmlbody = MailUtils.GetAccountUpdatedEmailHtml(customerName, accountNumber, updatedFields);
+        
+        var message = CreateBaseMessage(toEmail, subject);
+        message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
+        
+        await SendMimeMessageAsync(message);
+    }
+
+    public async Task SendAccountDeletionEmailAsync(string toEmail, string customerName, string accountNumber)
+    {
+        var subject = $"Account Closed!";
+        var htmlbody = MailUtils.GetAccountDeletedEmailHtml(customerName, accountNumber);
+        var message = CreateBaseMessage(toEmail, subject);
+        message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
+        
+        await SendMimeMessageAsync(message);
+    }
 }

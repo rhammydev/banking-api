@@ -23,11 +23,42 @@ public class AccountController : ControllerBase
     {
         var result = await _bankingService.CreateAccountAsync(createAccountRequest);
 
-        if (!result.IsSuccess)
-        {
-            return BadRequest(result);
-        }
-        
+        if (!result.IsSuccess) BadRequest(result);
         return Ok(result);
     }
+
+    [HttpGet("{accountNumber}")]
+    public async Task<ActionResult<ApiResponse<AccountResponse>>> GetAccountAsync(string accountNumber)
+    {
+        var result = await _bankingService.GetAccountAsync(accountNumber);
+        if (!result.IsSuccess) BadRequest(result);
+        return Ok(result);
+        
+    }
+
+    [HttpPut("{accountNumber}")]
+    public async Task<ActionResult<ApiResponse<AccountResponse>>> UpdateAccountAsync(string accountNumber,
+        UpdateAccountRequest updateAccountRequest)
+    {
+        var result = await _bankingService.UpdateAccountAsync(accountNumber, updateAccountRequest);
+        if (!result.IsSuccess) BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpDelete("delete-account/{accountNumber}")]
+    public async Task<ActionResult<ApiResponse<bool>>> DeleteAccountAsync(string accountNumber)
+    {
+        var result = await _bankingService.DeleteAccountAsync(accountNumber);
+        if (!result.IsSuccess) BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpGet("all-accounts")]
+    public async Task<ActionResult<ApiResponse<AccountResponse>>> GetAllAccountsAsync()
+    {
+        var result = await _bankingService.GetAllAccountAsync();
+        if (!result.IsSuccess) BadRequest(result);
+        return Ok(result);
+    }
+    
 }

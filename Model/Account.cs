@@ -9,5 +9,7 @@ public class Account
     public string AccountNumber { get; set; }
     public string Email { get; set; }
     public decimal Balance { get; set; }
+    
+    public bool isDeleted { get; set; }
     public DateTime CreatedAt { get; set; }
 }

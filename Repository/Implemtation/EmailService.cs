@@ -62,7 +62,7 @@ public class EmailService : IEmailService
     
     public async Task SendWelcomeEmailAsync(string toEmail, string customerName, string accountNumber, decimal balance)
     {
-        var subject = $"Welcome to Simple Banking API {customerName}!";
+        var subject = $"Welcome to Prestige Banking, {customerName}!";
         var htmlbody = MailUtils.GetWelcomeEmailHtml(customerName, accountNumber, balance);
         
         var message = CreateBaseMessage(toEmail, subject);
@@ -73,7 +73,7 @@ public class EmailService : IEmailService
 
     public async Task SendAccountUpdateEmailAsync(string toEmail, string customerName, string accountNumber, Dictionary<string, string> updatedFields)
     {
-        var subject = $"Account Details Updated!";
+        var subject = $"Prestige Banking: Account Update Confirmation - {accountNumber}";
         var htmlbody = MailUtils.GetAccountUpdatedEmailHtml(customerName, accountNumber, updatedFields);
         
         var message = CreateBaseMessage(toEmail, subject);
@@ -84,7 +84,7 @@ public class EmailService : IEmailService
 
     public async Task SendAccountDeletionEmailAsync(string toEmail, string customerName, string accountNumber)
     {
-        var subject = $"Account Closed!";
+        var subject = $"Prestige Banking: Account Closure Confirmation - {accountNumber}";
         var htmlbody = MailUtils.GetAccountDeletedEmailHtml(customerName, accountNumber);
         var message = CreateBaseMessage(toEmail, subject);
         message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
@@ -95,7 +95,7 @@ public class EmailService : IEmailService
     public async Task SendAccountDepositEmailAsync(string toEmail, string customerName, string accountNumber, decimal amount,
         decimal balance)
     {
-        var subject = $"Account Deposit Deposit!";
+        var subject = $"Prestige Banking: Deposit of ₦{amount:N0} Confirmed - {accountNumber}";
         var htmlbody = MailUtils.GetDepositEmailHtml(customerName, accountNumber, amount, balance);
         var message = CreateBaseMessage(toEmail, subject);
         message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
@@ -106,8 +106,8 @@ public class EmailService : IEmailService
     public async Task SendTransferDebitEmailAsync(string toEmail, string customerName, string senderAccountNumber,
         string recipientAccountNumber, decimal amount, decimal senderNewBalance)
     {
-        var subject = $"Transfer to Simple Banking API {customerName}!";
-        var htmlbody = MailUtils.GetTransferEmailHtml(customerName, senderAccountNumber, recipientAccountNumber, amount, senderNewBalance);
+        var subject = $"Prestige Banking: Debit Alert - ₦{amount:N0} Sent from {senderAccountNumber}";
+        var htmlbody = MailUtils.GetTransferDebitEmailHtml(customerName, senderAccountNumber, recipientAccountNumber, amount, senderNewBalance);
         var message = CreateBaseMessage(toEmail, subject);
         message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
         
@@ -117,8 +117,8 @@ public class EmailService : IEmailService
     public async Task SendTransferCreditEmailAsync(string toEmail, string customerName, string senderAccountNumber,
         string recipientAccountNumber, decimal amount, decimal recipentNewBalance)
     {
-        var subject = $"Transfer to Simple Banking API {customerName}!";
-        var htmlbody = MailUtils.GetTransferEmailHtml(customerName, senderAccountNumber, recipientAccountNumber, amount, recipentNewBalance);
+        var subject = $"Prestige Banking: Credit Alert - ₦{amount:N0} Received in {recipientAccountNumber}";
+        var htmlbody = MailUtils.GetTransferCreditEmailHtml(customerName, senderAccountNumber, recipientAccountNumber, amount, recipentNewBalance);
         var message = CreateBaseMessage(toEmail, subject);
         message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
         
@@ -128,7 +128,7 @@ public class EmailService : IEmailService
     public async Task SendWithdrawalEmailAsync(string toEmail, string customerName, string accountNumber, decimal amount,
         decimal balance)
     {
-        var subject = $"Withdrawal Deposit Deposit!";
+        var subject = $"Prestige Banking: Withdrawal of ₦{amount:N0} Confirmed - {accountNumber}";
         var htmlbody = MailUtils.GetWithdrawalEmailHtml(customerName, accountNumber, amount, balance);
         var message = CreateBaseMessage(toEmail, subject);
         message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };

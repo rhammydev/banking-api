@@ -60,5 +60,37 @@ public class AccountController : ControllerBase
         if (!result.IsSuccess) BadRequest(result);
         return Ok(result);
     }
+
+    [HttpPost("deposit")]
+    public async Task<ActionResult<ApiResponse<AccountResponse>>> DepositAsync(DepositRequest request)
+    {
+        var result = await _bankingService.DepositFundAsync(request);
+        if (!result.IsSuccess) BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpPost("withdraw")]
+    public async Task<ActionResult<ApiResponse<AccountResponse>>> WithdrawAsync(WithdrawRequest request)
+    {
+        var result = await _bankingService.WithdrawFundAsync(request);
+        if (!result.IsSuccess) BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpPost("transfer-fund")]
+    public async Task<ActionResult<ApiResponse<AccountResponse>>> TransferFundAsync(TransferRequest request)
+    {
+        var result = await _bankingService.TransferFundAsync(request);
+        if (!result.IsSuccess) BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpGet("balance/{accountNumber}")]
+    public async Task<ActionResult<ApiResponse<BalanceResponse>>> GetBalanceAsync(string accountNumber)
+    {
+        var result = await _bankingService.GetBalanceAsync(accountNumber);
+        if (!result.IsSuccess) BadRequest(result);
+        return Ok(result);
+    }
     
 }

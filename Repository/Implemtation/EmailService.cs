@@ -91,4 +91,48 @@ public class EmailService : IEmailService
         
         await SendMimeMessageAsync(message);
     }
+
+    public async Task SendAccountDepositEmailAsync(string toEmail, string customerName, string accountNumber, decimal amount,
+        decimal balance)
+    {
+        var subject = $"Account Deposit Deposit!";
+        var htmlbody = MailUtils.GetDepositEmailHtml(customerName, accountNumber, amount, balance);
+        var message = CreateBaseMessage(toEmail, subject);
+        message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
+        
+        await SendMimeMessageAsync(message);
+    }
+
+    public async Task SendTransferDebitEmailAsync(string toEmail, string customerName, string senderAccountNumber,
+        string recipientAccountNumber, decimal amount, decimal senderNewBalance)
+    {
+        var subject = $"Transfer to Simple Banking API {customerName}!";
+        var htmlbody = MailUtils.GetTransferEmailHtml(customerName, senderAccountNumber, recipientAccountNumber, amount, senderNewBalance);
+        var message = CreateBaseMessage(toEmail, subject);
+        message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
+        
+        await SendMimeMessageAsync(message);
+    }
+    
+    public async Task SendTransferCreditEmailAsync(string toEmail, string customerName, string senderAccountNumber,
+        string recipientAccountNumber, decimal amount, decimal recipentNewBalance)
+    {
+        var subject = $"Transfer to Simple Banking API {customerName}!";
+        var htmlbody = MailUtils.GetTransferEmailHtml(customerName, senderAccountNumber, recipientAccountNumber, amount, recipentNewBalance);
+        var message = CreateBaseMessage(toEmail, subject);
+        message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
+        
+        await SendMimeMessageAsync(message);
+    }
+
+    public async Task SendWithdrawalEmailAsync(string toEmail, string customerName, string accountNumber, decimal amount,
+        decimal balance)
+    {
+        var subject = $"Withdrawal Deposit Deposit!";
+        var htmlbody = MailUtils.GetWithdrawalEmailHtml(customerName, accountNumber, amount, balance);
+        var message = CreateBaseMessage(toEmail, subject);
+        message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
+        
+        await SendMimeMessageAsync(message);
+    }
 }

@@ -251,4 +251,143 @@ public static class MailUtils
 
     return GetEmailWrapper(title, content);
 }
+    
+    public static string GetTransferEmailHtml(string customerName, string accountNumber, string recipientAccountNumber, decimal amount, decimal newBalance)
+{
+    var title = "Transfer Successful";
+
+    var content = $@"
+        <div style='text-align: center; margin-bottom: 30px;'>
+            <h2 style='color: #1e3c72; font-size: 24px; margin-bottom: 10px;'>Transfer Confirmation</h2>
+            <p style='color: #4a5568; font-size: 16px; margin: 0;'>Hi {customerName}, your transfer was completed successfully.</p>
+        </div>
+
+        <div style='text-align: center; margin-bottom: 30px;'>
+            <span class='amount-highlight'>- ₦{amount:N2}</span>
+        </div>
+
+        <h3 style='color: #2d3748; border-bottom: 2px solid #eef2f5; padding-bottom: 8px; margin-bottom: 15px;'>Transfer Details</h3>
+        <table class='details-table'>
+            <tr>
+                <th>From Account</th>
+                <td>{accountNumber}</td>
+            </tr>
+            <tr>
+                <th>To Account</th>
+                <td>{recipientAccountNumber}</td>
+            </tr>
+            <tr>
+                <th>Amount Sent</th>
+                <td>₦{amount:N2}</td>
+            </tr>
+            <tr>
+                <th>New Balance</th>
+                <td>₦{newBalance:N2}</td>
+            </tr>
+            <tr>
+                <th>Date & Time</th>
+                <td>{DateTime.UtcNow:f} (UTC)</td>
+            </tr>
+        </table>
+
+        <div style='background-color: #fffbeb; border-left: 4px solid #f6ad55; padding: 15px 20px; border-radius: 6px; margin-top: 25px;'>
+            <p style='margin: 0; color: #744210; font-size: 14px;'>
+                ⚠️ If you did not initiate this transfer, please contact support immediately.
+            </p>
+        </div>";
+
+    return GetEmailWrapper(title, content);
+}
+
+public static string GetDepositEmailHtml(string customerName, string accountNumber, decimal amount, decimal newBalance)
+{
+    var title = "Deposit Successful";
+
+    var content = $@"
+        <div style='text-align: center; margin-bottom: 30px;'>
+            <h2 style='color: #1e3c72; font-size: 24px; margin-bottom: 10px;'>Deposit Confirmation</h2>
+            <p style='color: #4a5568; font-size: 16px; margin: 0;'>Hi {customerName}, your deposit was received successfully.</p>
+        </div>
+
+        <div style='text-align: center; margin-bottom: 30px;'>
+            <span class='amount-highlight' style='color: #2f855a; background-color: #f0fff4;'>+ ₦{amount:N2}</span>
+        </div>
+
+        <h3 style='color: #2d3748; border-bottom: 2px solid #eef2f5; padding-bottom: 8px; margin-bottom: 15px;'>Deposit Details</h3>
+        <table class='details-table'>
+            <tr>
+                <th>Account Number</th>
+                <td>{accountNumber}</td>
+            </tr>
+            <tr>
+                <th>Account Holder</th>
+                <td>{customerName}</td>
+            </tr>
+            <tr>
+                <th>Amount Deposited</th>
+                <td>₦{amount:N2}</td>
+            </tr>
+            <tr>
+                <th>New Balance</th>
+                <td>₦{newBalance:N2}</td>
+            </tr>
+            <tr>
+                <th>Date & Time</th>
+                <td>{DateTime.UtcNow:f} (UTC)</td>
+            </tr>
+        </table>
+
+        <p style='color: #4a5568; font-size: 14px; margin-top: 25px;'>
+            Your funds are available immediately. Thank you for banking with us.
+        </p>";
+
+    return GetEmailWrapper(title, content);
+}
+
+public static string GetWithdrawalEmailHtml(string customerName, string accountNumber, decimal amount, decimal newBalance)
+{
+    var title = "Withdrawal Successful";
+
+    var content = $@"
+        <div style='text-align: center; margin-bottom: 30px;'>
+            <h2 style='color: #1e3c72; font-size: 24px; margin-bottom: 10px;'>Withdrawal Confirmation</h2>
+            <p style='color: #4a5568; font-size: 16px; margin: 0;'>Hi {customerName}, your withdrawal was processed successfully.</p>
+        </div>
+
+        <div style='text-align: center; margin-bottom: 30px;'>
+            <span class='amount-highlight'>- ₦{amount:N2}</span>
+        </div>
+
+        <h3 style='color: #2d3748; border-bottom: 2px solid #eef2f5; padding-bottom: 8px; margin-bottom: 15px;'>Withdrawal Details</h3>
+        <table class='details-table'>
+            <tr>
+                <th>Account Number</th>
+                <td>{accountNumber}</td>
+            </tr>
+            <tr>
+                <th>Account Holder</th>
+                <td>{customerName}</td>
+            </tr>
+            <tr>
+                <th>Amount Withdrawn</th>
+                <td>₦{amount:N2}</td>
+            </tr>
+            <tr>
+                <th>New Balance</th>
+                <td>₦{newBalance:N2}</td>
+            </tr>
+            <tr>
+                <th>Date & Time</th>
+                <td>{DateTime.UtcNow:f} (UTC)</td>
+            </tr>
+        </table>
+
+        <div style='background-color: #fffbeb; border-left: 4px solid #f6ad55; padding: 15px 20px; border-radius: 6px; margin-top: 25px;'>
+            <p style='margin: 0; color: #744210; font-size: 14px;'>
+                ⚠️ If you did not initiate this withdrawal, please contact support immediately.
+            </p>
+        </div>";
+
+    return GetEmailWrapper(title, content);
+}
 }

@@ -71,13 +71,21 @@ public class BankingService : IBankingService
         try
         {
             var account = await _dbContext.Accounts
-                .Where(x => x.isDeleted == false)
                 .FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);
+           
             if (account == null)
             {
                 _logger.LogError($"Account number {accountNumber} not found");
                 return ApiResponse<AccountResponse>.FailureResponse("Account number not found");
             }
+
+            if (account.isDeleted)
+            {
+                _logger.LogError($"Attempted access to deactivated account: {accountNumber} - GetAccount");
+                return ApiResponse<AccountResponse>.FailureResponse(
+                    "This account has been deactivated. Please contact our support team for assistance.");
+            }
+            
             _logger.LogInformation($"Successfully retrieved information for {account.AccountNumber}");
         
             var response = new AccountResponse()
@@ -103,12 +111,19 @@ public class BankingService : IBankingService
         try
         {
             var account = await _dbContext.Accounts
-                .Where(x => x.isDeleted == false)
                 .FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);
+            
             if (account == null)
             {
                 _logger.LogError($"Account number {accountNumber} not found");
                 return ApiResponse<AccountResponse>.FailureResponse("Account number not found");
+            }
+            
+            if (account.isDeleted)
+            {
+                _logger.LogError($"Attempted access to deactivated account: {accountNumber} - UpdateAccount");
+                return ApiResponse<AccountResponse>.FailureResponse(
+                    "This account has been deactivated. Please contact our support team for assistance.");
             }
         
             account.FirstName = updateAccountRequest.FirstName;
@@ -151,12 +166,18 @@ public class BankingService : IBankingService
         try
         {
             var account = await _dbContext.Accounts
-                .Where(x => x.isDeleted == false)
                 .FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);
             if (account == null)
             {
                 _logger.LogError($"Account number {accountNumber} not found");
                 return ApiResponse<bool>.FailureResponse("Account number not found");
+            }
+            
+            if (account.isDeleted)
+            {
+                _logger.LogError($"Attempted access to deactivated account: {accountNumber} - DeleteAccount");
+                return ApiResponse<bool>.FailureResponse(
+                    "This account has already been deleted.");
             }
             
             account.isDeleted = true;
@@ -191,7 +212,7 @@ public class BankingService : IBankingService
                     CreatedAt = account.CreatedAt
                 }).ToListAsync();
             
-            _logger.LogInformation($"Successfully retrieved {accounts.Count} accounts");
+            _logger.LogInformation($"Successfully retrieved all active {accounts.Count} accounts");
             
             return ApiResponse<IEnumerable<AccountResponse>>.SuccessResponse(accounts);
         }
@@ -214,12 +235,24 @@ public class BankingService : IBankingService
             }
             
             var senderAccount = await  _dbContext.Accounts
-                .Where(x => x.isDeleted == false)
                 .FirstOrDefaultAsync(x => x.AccountNumber == request.SenderAccountNumber);
             
             var receiverAccount = await  _dbContext.Accounts
-                .Where(x => x.isDeleted == false)
                 .FirstOrDefaultAsync(x => x.AccountNumber == request.ReceiverAccountNumber);
+            
+            if (senderAccount!.isDeleted)
+            {
+                _logger.LogError($"Attempted access to deactivated account: {senderAccount.AccountNumber} - TransferFundSender");
+                return ApiResponse<TransferSummary>.FailureResponse(
+                    $"This account {senderAccount.AccountNumber} has been deactivated. Please contact our support team for assistance.");
+            }
+            
+            if (receiverAccount!.isDeleted)
+            {
+                _logger.LogError($"Attempted access to deactivated account: {receiverAccount.AccountNumber} - TransferFundReceiver");
+                return ApiResponse<TransferSummary>.FailureResponse(
+                    $"This account {receiverAccount.AccountNumber} has been deactivated. Please contact our support team for assistance.");
+            }
 
             if (senderAccount == null || receiverAccount == null)
             {
@@ -303,13 +336,19 @@ public class BankingService : IBankingService
         try
         {
             var account = await  _dbContext.Accounts
-                .Where(x => x.isDeleted == false)
                 .FirstOrDefaultAsync(x => x.AccountNumber == request.AccountNumber);
             
             if (account == null)
             {
                 _logger.LogError($"Account with account number {request.AccountNumber} not found");
                 return ApiResponse<decimal>.FailureResponse("Account not found");
+            }
+            
+            if (account.isDeleted)
+            {
+                _logger.LogError($"Attempted access to deactivated account: {account.AccountNumber} - Deposit");
+                return ApiResponse<decimal>.FailureResponse(
+                    "This account has been deactivated. Please contact our support team for assistance.");
             }
             
             account.Balance += request.Amount;
@@ -355,13 +394,19 @@ public class BankingService : IBankingService
         try
         {
             var account = await  _dbContext.Accounts
-                .Where(x => x.isDeleted == false)
                 .FirstOrDefaultAsync(x => x.AccountNumber == request.AccountNumber);
             
             if (account == null)
             {
                 _logger.LogError($"Withdrawal failed: Account with account number {request.AccountNumber} not found");
                 return ApiResponse<decimal>.FailureResponse($"Account number {request.AccountNumber} not found");
+            }
+            
+            if (account.isDeleted)
+            {
+                _logger.LogError($"Attempted access to deactivated account: {account.AccountNumber} - Withdraw");
+                return ApiResponse<decimal>.FailureResponse(
+                    "This account has been deactivated. Please contact our support team for assistance.");
             }
 
             if (account.Balance < request.Amount)
@@ -404,8 +449,14 @@ public class BankingService : IBankingService
     public async Task<ApiResponse<BalanceResponse>> GetBalanceAsync(string accountNumber)
     {
         var account = await _dbContext.Accounts
-            .Where(x => x.isDeleted == false)
             .FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);
+        
+        if (account!.isDeleted)
+        {
+            _logger.LogError($"Attempted access to deactivated account: {account.AccountNumber} - GetBalance");
+            return ApiResponse<BalanceResponse>.FailureResponse(
+                "This account has been deactivated. Please contact our support team for assistance.");
+        }
         
         if (account == null)
         {
@@ -413,6 +464,7 @@ public class BankingService : IBankingService
             return ApiResponse<BalanceResponse>.FailureResponse("Account not found");
         }
 
+        
         var response = new BalanceResponse()
         {
             AccountNumber = account.AccountNumber,

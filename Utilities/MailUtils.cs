@@ -473,6 +473,97 @@ public static class MailUtils
         return GetBaseTemplate(title, content);
     }
     
+    public static string GetAccountReactivationEmailHtml(string customerName, string accountNumber)
+{
+    var title = "Account Reactivation Confirmation";
+    
+    var content = $@"
+        <div style='text-align: center; margin-bottom: 30px;'>
+            <h2 style='color: #0A1628; font-size: 22px; font-weight: 700; margin: 0 0 8px 0;'>
+                Account Successfully Reactivated 🔓
+            </h2>
+            <p style='color: #4A5568; font-size: 15px; margin: 0;'>
+                Dear {customerName}, your account has been restored successfully.
+            </p>
+        </div>
+
+        <div class='alert-box alert-success'>
+            <strong>✅ Account Restored:</strong> Your account is now active and fully operational. All services have been reinstated.
+        </div>
+
+        <div style='background: linear-gradient(135deg, #0A1628 0%, #1B2B4A 100%); color: #ffffff; padding: 28px 24px; border-radius: 18px; text-align: center; margin-bottom: 28px; box-shadow: 0 12px 30px rgba(10, 22, 40, 0.2); border: 1px solid rgba(212, 168, 83, 0.2);'>
+            <span style='font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #D4A853; font-weight: 600; display: block; margin-bottom: 6px;'>
+                Reactivated Account
+            </span>
+            <h1 style='font-family: ui-monospace, SFMono-Regular, monospace; font-size: 26px; margin: 0 0 8px 0; letter-spacing: 3px; font-weight: 700; color: #FFFFFF;'>
+                {accountNumber}
+            </h1>
+            <div style='display: inline-block; background: rgba(212, 168, 83, 0.1); border: 1px solid rgba(212, 168, 83, 0.3); padding: 6px 18px; border-radius: 30px; font-size: 13px; font-weight: 600; color: #D4A853;'>
+                <span class='status-badge badge-success' style='background: transparent; color: #D4A853; border-color: #D4A853;'>● Active</span>
+            </div>
+        </div>
+
+        <h3 class='section-title'>Reactivation Summary</h3>
+        <table class='details-table'>
+            <tr>
+                <th>Account Holder</th>
+                <td>{customerName}</td>
+            </tr>
+            <tr>
+                <th>Account Number</th>
+                <td>{accountNumber}</td>
+            </tr>
+            <tr>
+                <th>Account Status</th>
+                <td><span class='status-badge badge-success'>● Active</span></td>
+            </tr>
+            <tr>
+                <th>Reactivation Date</th>
+                <td style='font-size: 13px; color: #4A5568;'>{DateTime.UtcNow:dd MMMM yyyy} at {DateTime.UtcNow:HH:mm} (WAT)</td>
+            </tr>
+            <tr>
+                <th>Reference ID</th>
+                <td><span class='transaction-reference'>REACT-{DateTime.UtcNow:yyyyMMdd}-{new Random().Next(1000, 9999)}</span></td>
+            </tr>
+        </table>
+
+        <h3 class='section-title'>What Happens Next</h3>
+        <table width='100%' cellspacing='0' cellpadding='0'>
+            <tr>
+                <td style='width: 44px; vertical-align: top; padding-top: 2px;'>
+                    <div style='background: linear-gradient(135deg, #0A1628, #1B2B4A); color: #D4A853; border-radius: 10px; width: 28px; height: 28px; line-height: 28px; text-align: center; font-weight: 700; font-size: 12px;'>1</div>
+                </td>
+                <td style='vertical-align: top; padding-left: 12px; padding-bottom: 20px;'>
+                    <strong style='color: #0A1628; font-size: 14px; display: block; margin-bottom: 3px;'>Access Restored</strong>
+                    <span style='color: #4A5568; font-size: 13px; line-height: 1.5;'>You can now perform all banking transactions including transfers, withdrawals, and deposits.</span>
+                </td>
+            </tr>
+            <tr>
+                <td style='width: 44px; vertical-align: top; padding-top: 2px;'>
+                    <div style='background: linear-gradient(135deg, #0A1628, #1B2B4A); color: #D4A853; border-radius: 10px; width: 28px; height: 28px; line-height: 28px; text-align: center; font-weight: 700; font-size: 12px;'>2</div>
+                </td>
+                <td style='vertical-align: top; padding-left: 12px; padding-bottom: 20px;'>
+                    <strong style='color: #0A1628; font-size: 14px; display: block; margin-bottom: 3px;'>Security Verification</strong>
+                    <span style='color: #4A5568; font-size: 13px; line-height: 1.5;'>Your security settings remain intact. For enhanced protection, consider updating your PIN and passwords.</span>
+                </td>
+            </tr>
+            <tr>
+                <td style='width: 44px; vertical-align: top; padding-top: 2px;'>
+                    <div style='background: linear-gradient(135deg, #0A1628, #1B2B4A); color: #D4A853; border-radius: 10px; width: 28px; height: 28px; line-height: 28px; text-align: center; font-weight: 700; font-size: 12px;'>3</div>
+                </td>
+                <td style='vertical-align: top; padding-left: 12px;'>
+                    <strong style='color: #0A1628; font-size: 14px; display: block; margin-bottom: 3px;'>Stay Informed</strong>
+                    <span style='color: #4A5568; font-size: 13px; line-height: 1.5;'>Monitor your account regularly for any suspicious activities. We'll notify you of all transactions.</span>
+                </td>
+            </tr>
+        </table>
+
+        <div class='alert-box alert-info' style='margin-top: 28px;'>
+            <strong>📱 Need Help?</strong> Download our mobile app for 24/7 account access or call our support team at <strong>+234 700 PRESTIGE</strong>.
+        </div>";
+
+    return GetBaseTemplate(title, content);
+}
     public static string GetTransferDebitEmailHtml(string customerName, string accountNumber, string recipientAccountNumber, decimal amount, decimal newBalance)
     {
         var title = "Debit Transaction Alert";

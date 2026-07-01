@@ -52,6 +52,14 @@ public class AccountController : ControllerBase
         if (!result.IsSuccess) BadRequest(result);
         return Ok(result);
     }
+    
+    [HttpPost("activate-account/{accountNumber}")]
+    public async Task<ActionResult<ApiResponse<bool>>> ReactivateAccountAsync(string accountNumber)
+    {
+        var result = await _bankingService.ReactivateAccountAsync(accountNumber);
+        if (!result.IsSuccess) BadRequest(result);
+        return Ok(result);
+    }
 
     [HttpGet("all-accounts")]
     public async Task<ActionResult<ApiResponse<AccountResponse>>> GetAllAccountsAsync()

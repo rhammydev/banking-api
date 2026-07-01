@@ -91,6 +91,16 @@ public class EmailService : IEmailService
         
         await SendMimeMessageAsync(message);
     }
+    
+    public async Task SendAccountReactivationEmailAsync(string toEmail, string customerName, string accountNumber)
+    {
+        var subject = $"Prestige Banking: Account Activation Confirmation - {accountNumber}";
+        var htmlbody = MailUtils.GetAccountReactivationEmailHtml(customerName, accountNumber);
+        var message = CreateBaseMessage(toEmail, subject);
+        message.Body = new TextPart(TextFormat.Html) { Text = htmlbody };
+        
+        await SendMimeMessageAsync(message);
+    }
 
     public async Task SendAccountDepositEmailAsync(string toEmail, string customerName, string accountNumber, decimal amount,
         decimal balance)

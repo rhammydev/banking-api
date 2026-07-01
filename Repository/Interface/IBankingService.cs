@@ -9,6 +9,7 @@ public interface IBankingService
     Task<ApiResponse<AccountResponse>> GetAccountAsync(string accountNumber);
     Task<ApiResponse<AccountResponse>> UpdateAccountAsync(string accountNumber, UpdateAccountRequest updateAccountRequest);
     Task<ApiResponse<bool>> DeleteAccountAsync(string accountNumber);
+    Task<ApiResponse<bool>> ReactivateAccountAsync(string accountNumber);
     Task<ApiResponse<IEnumerable<AccountResponse>>> GetAllAccountAsync();
     
     // bank operations

@@ -196,6 +196,42 @@ public class BankingService : IBankingService
             return ApiResponse<bool>.FailureResponse("Failed to delete account");
         }
     }
+    
+    public async Task<ApiResponse<bool>> ReactivateAccountAsync(string accountNumber)
+    {
+        try
+        {
+            var account = await _dbContext.Accounts
+                .FirstOrDefaultAsync(x => x.AccountNumber == accountNumber);
+            if (account == null)
+            {
+                _logger.LogError($"Account number {accountNumber} not found");
+                return ApiResponse<bool>.FailureResponse("Account number not found");
+            }
+            
+            if (!account.isDeleted)
+            {
+                _logger.LogError($"Attempted access to reactivate an active account: {accountNumber} - ReactivateAccount");
+                return ApiResponse<bool>.FailureResponse(
+                    "This account has already been activated.");
+            }
+            
+            account.isDeleted = false;
+            
+            _dbContext.Accounts.Update(account);
+            await _dbContext.SaveChangesAsync();
+            
+            await _emailService.SendAccountReactivationEmailAsync(account.Email, $"{account.FirstName} {account.LastName}", account.AccountNumber);
+            
+            _logger.LogInformation($"Successfully reactivated information for {account.AccountNumber}");
+            return ApiResponse<bool>.SuccessResponse(true);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to reactivate account");
+            return ApiResponse<bool>.FailureResponse("Failed to reactivate account");
+        }
+    }
 
     public async Task<ApiResponse<IEnumerable<AccountResponse>>> GetAllAccountAsync()
     {
